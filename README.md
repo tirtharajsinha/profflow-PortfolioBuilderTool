@@ -1,9 +1,9 @@
 # profflow-PortfolioBuilderTool
 Profflow is a portfolio builder tool developed with django-framework by Tirtharaj Sinha<br><br><br>
 
-[lang]build with- python-django framework, html5, css3, JavaScript.<br>
-[tool]Used tools - Visual Studio Code, Git <br>
-[dart] system used- Hp envy x360 Ryzan 5 hexa core.<br><br>
+build with- python-django framework, html5, css3, JavaScript.<br>
+Used tools - Visual Studio Code, Git <br>
+system used- Hp envy x360 Ryzan 5 hexa core.<br><br>
 
 special cradits- Django Documentation, Stackoverflow, CodeWithHarry<br><br>
 
