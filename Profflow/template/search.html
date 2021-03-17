@@ -21,6 +21,9 @@
 
             $("#search").autocomplete({
                 source: "{% url 'autocomplete'%}",
+                position: { my : "right+30 top", at: "right bottom" },
+                autoFocus: true
+                
             });
         });
     </script>

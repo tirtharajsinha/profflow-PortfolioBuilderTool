@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.utils.regex_helper import contains
+import datetime
 # Create your models here.
 
 class userdetail(models.Model):
@@ -23,10 +24,22 @@ class userdetail(models.Model):
     def __str__(self):
         return self.username
 
-class Entry(models.Model):
-    pic=models.ImageField(upload_to="profiles")
-    username=models.TextField(default="")
+ 
 
-    objects = models.Manager()    
+class analytic(models.Model):
+    username=models.CharField(max_length=50)
+    total=models.IntegerField(default=0)
+    year=models.IntegerField(default=datetime.datetime.now().year)
+    month=models.IntegerField(default=datetime.datetime.now().month)
+    prev=models.IntegerField(default=0)
+    w1=models.IntegerField(default=0)
+    w2=models.IntegerField(default=0)
+    w3=models.IntegerField(default=0)
+    w4=models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.username
+
+
 
 

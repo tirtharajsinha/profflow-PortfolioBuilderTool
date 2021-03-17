@@ -17,6 +17,7 @@ urlpatterns = [
     path("user/update",views.update,name="update"),
     path("user/search",views.search,name="search"),
     path("user/auto",views.autocomplete,name="autocomplete"),
+    path("user/analytics",views.analytics,name="autocomplete"),
     # path("about",views.about,name="about"),
     # path("services",views.services,name="services"),
     # path("contact",views.contact,name="contact"),

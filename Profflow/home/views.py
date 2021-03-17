@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import UserCreationForm
 from datetime import datetime
-from home.models import userdetail, Entry
+from home.models import userdetail,analytic
 
 from django.contrib import messages
 # Create your views here.
@@ -101,7 +101,9 @@ def portfolio(request, username):
         for hi in allhigh:
             high=hi.split(":")
             highlight.append([high[0],high[-1]])
-        print(highlight)    
+        print("......>>",type(username))    
+        analyticsload(username)
+
 
         return render(request,"portfolio.html",{"data":userdata,"otherlinks":links,"highlights":highlight})    
 
@@ -208,6 +210,9 @@ def makeport(request):
             details = userdetail(username=username, firstname=firstname, lastname=lastname, email=email, pic=pic, phone=phone,
                              bio=bio, website=website, instagram=instagram, facebook=facebook, twitter=twitter, other=other, highlight=highlight)
             details.save()
+            analyticdata=analytic(username=username)
+            analyticdata.save()
+
 
         print("uploaded sucessesfully")
         return render(request, "data-uploader.html")
@@ -267,4 +272,80 @@ def update(request):
     userdata = data[userid]
     return render(request, "update.html", {"data": userdata})
 
+def analytics(request):
+    if request.user.is_anonymous:
+        return redirect("/user/login")
+    data = analytic.objects.all()
+    userlist = data.values_list("username")
+    username=str(request.user).strip()
+    print()
+    # print(analytic.objects.get())
+    if (username,) not in userlist:
+        return render(request, "data-uploader.html")
+
+
+    analytics=analytic.objects.get(username=request.user)
+    growth=(analytics.prev / ((analytics.w1 + analytics.w2 + analytics.w3 + analytics.w4) - analytics.prev)) * 100
+    
+    growth=int(growth)
+    
+    w1=analytics.w1
+    if w1==0:
+        wp1=0
+    else:
+        wp1=w1/(analytics.w1 + analytics.w2 + analytics.w3 + analytics.w4)*100
+    
+    w2=analytics.w2
+    if w2==0:
+        wp2=0
+    else:
+        wp2=w2/(analytics.w1 + analytics.w2 + analytics.w3 + analytics.w4)*100
+
+    w3=analytics.w3
+    if w3==0:
+        wp3=0
+    else:
+        wp3=w3/(analytics.w1 + analytics.w2 + analytics.w3 + analytics.w4)*100
+
+    w4=analytics.w4
+    if w4==0:
+        wp4=0
+    else:
+        wp4=w4/(analytics.w1 + analytics.w2 + analytics.w3 + analytics.w4)*100
+
+    week=[int(wp1),int(wp2),int(wp3),int(wp4)]
+    print("---->>>",week)
+    print(growth)
+    
+    return render(request,"analytics.html",{"analytic":analytics,"growth":growth,"week":week})
+
+def analyticsload(user):
+    print("//////",user)
+    data = analytic.objects.all()
+    userlist = data.values_list("username")
+    print(userlist)
+    if (user,) in userlist:
+        userdata=analytic.objects.get(username=user)
+        userdata.total+=1
+        if userdata.year!=datetime.now().year:
+            userdata.year=datetime.now().year
+        if userdata.month!=datetime.now().month:
+            userdata.month=datetime.now().month
+            userdata.prev=userdata.w1+userdata.w2+userdata.w3+userdata.w4
+            userdata.w1=0    
+            userdata.w2=0 
+            userdata.w3=0 
+            userdata.w4=0 
+        if datetime.now().day<=7:
+            userdata.w1+=1
+        elif datetime.now().day<=14:
+            userdata.w2+=1
+        elif datetime.now().day<=21:
+            userdata.w3+=1
+        else:
+            userdata.w4+=1
+
+        userdata.save()
+    
+        
 
